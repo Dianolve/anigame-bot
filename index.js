@@ -36,6 +36,7 @@ client.on("messageCreate", message => {
             if(message.channel.id === fin.channelID && message.author.id === client.user.id) {
                 message.reply('ok!');
                 client.channels.cache.get(fin.channelID).send('.stam');
+                client.channels.cache.get(fin.channelID).send('.select 1');
                 console.log('init in: ' + message.channel.id + ' in server: ' + message.guild.id)
             }
             break;
@@ -43,37 +44,48 @@ client.on("messageCreate", message => {
         case 'Congratulations!':
             if(message.channel.id === fin.channelID && message.author.id === fin.aniGameID && !StamLow) {
                 client.channels.cache.get(fin.channelID).send('.bt');
-                console.log('Fight Complete!')
                 break;
             }
 
         default:
             if(message.author.id === fin.aniGameID && message.channel.id === fin.channelID){
                 try {
-                    console.log(message.embeds[0].footer.text.split("  ")[0]);
-
-                    if(message.embeds[0].footer.text == 'React with ✅ to confirm the battle!') {
-                        message.clickButton();
-                    } else if (message.embeds[0].title == 'Error ⛔') {
+                    if (message.embeds[0].title == 'Error ⛔') {
+                        console.log('lowstam')
                         StamLow = true;
                         setTimeout(() => {
                             client.channels.cache.get(fin.channelID).send('.bt');
                             StamLow = false; 
                         }, (StamTotal / 3) * 4 * 60 * 1000);
-                    } else if (message.embeds[0].title == '**Defeated :CRY:**') {
-                        Character++;
-                        Character = (Character % 4) + 1;
+                    } else if (message.embeds[0].title.split(' ')[0] == '**Defeated') {
+                        Character = (Character % 3) + 1;
                         client.channels.cache.get(fin.channelID).send('.select ' + Character);
-                    } else if (message.embeds[0].title == '**Scratch Ticket :scratchticket:**') {
+                        client.channels.cache.get(fin.channelID).send('.bt');
+                    } else if (message.embeds[0].title.split(' ')[0] == '**Scratch') {
                         message.clickButton();
+                    }
+                    else if(message.embeds[0].title == 'Congratulations!'){
+                        client.channels.cache.get(fin.channelID).send('.loc ' + message.embeds[0].description.split('`')[1].split(' ')[1]);
+                    }
+                    else if(message.embeds[0].footer !== 'undefined') {
+                        try {
+                            if(message.embeds[0].footer.text == 'React with ✅ to confirm the battle!') {
+                                try {
+                                    message.clickButton();
+                                } catch (error) {
+                                    console.log('interaction failed');
+                                }
+                            }
+                        } catch (error) {
+                            console.error();                            
+                        }
                     }
 
                 } catch (error) {
-                    console.log('message has no embed')
+                    console.log('message has no embed \n' + error)
                 }
             }
     }
-}
 });
 
 setInterval(() => {
