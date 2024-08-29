@@ -20,13 +20,6 @@ client.on('ready', async () => {
 
 client.on("messageCreate", message => {
     if(message.author.id === fin.aniGameID && message.channel.id === fin.channelID) console.log(message.embeds);
-
-    if(message.channel.id === fin.channelID && message.author.id === client.id) {
-        message.reply('ok!');
-        console.log('init in: ' + message.channel.id + ' in server: ' + message.guild.id)
-        client.channels.cache.get(fin.channelID).send('.bt');
-    }
-
     switch (NextIsFight) {
         case true:
             if(message.author.id === fin.aniGameID && message.channel.id === fin.channelID) NextIsFight = false;
@@ -35,7 +28,7 @@ client.on("messageCreate", message => {
         case false:
             switch (message.content.split(" ")[0]) {
                 case 'begin':
-                    if(message.channel.id === fin.channelID) {
+                    if(message.channel.id === fin.channelID && message.author.id === client.user.id) {
                         message.reply('ok!');
                         console.log('init in: ' + message.channel.id + ' in server: ' + message.guild.id)
                         client.channels.cache.get(fin.channelID).send('.bt');
@@ -51,9 +44,13 @@ client.on("messageCreate", message => {
                 default:
                     if(message.author.id === fin.aniGameID && message.channel.id === fin.channelID){
                         console.log(message.embeds[0].footer.text.split("  ")[0]);
-                        if(message.embeds[0].footer.text == 'React with ✅ to confirm the battle!') {
-                            message.clickButton();
-                            NextIsFight = true;
+                        try {
+                            if(message.embeds[0].footer.text == 'React with ✅ to confirm the battle!') {
+                                message.clickButton();
+                                NextIsFight = true;
+                            }
+                        } catch (error) {
+                            console.log('message has no embed')
                         }
                     }
             }
