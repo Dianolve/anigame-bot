@@ -64,6 +64,10 @@ client.on("messageCreate", message => {
                     }
                     else if(message.embeds[0].title == 'Congratulations!'){
                         client.channels.cache.get(fin.channelID).send('.loc ' + message.embeds[0].description.split('`')[1].split(' ')[1]);
+                        setTimeout(() => {
+                            client.channels.cache.get(fin.channelID).send('.bt');
+                        }, 3000);
+                        
                     }
                     else if(message.embeds[0].footer !== 'undefined') {
                         try {
