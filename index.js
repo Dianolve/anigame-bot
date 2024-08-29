@@ -42,7 +42,7 @@ client.on("messageCreate", message => {
             break;
 
         case 'Congratulations!':
-            if(message.channel.id === fin.channelID && message.author.id === fin.aniGameID && !StamLow) {
+            if(message.channel.id === fin.channelID && message.author.id === fin.aniGameID) {
                 client.channels.cache.get(fin.channelID).send('.bt');
                 break;
             }
@@ -52,10 +52,8 @@ client.on("messageCreate", message => {
                 try {
                     if (message.embeds[0].title == 'Error ⛔') {
                         console.log('lowstam')
-                        StamLow = true;
                         setTimeout(() => {
                             client.channels.cache.get(fin.channelID).send('.bt');
-                            StamLow = false; 
                         }, (StamTotal / 3) * 4 * 60 * 1000);
                     } else if (message.embeds[0].title.split(' ')[0] == '**Defeated') {
                         Character = (Character % 3) + 1;
@@ -90,11 +88,11 @@ client.on("messageCreate", message => {
 
 setInterval(() => {
     client.channels.cache.get(fin.channelID).send('.hourly');
-}, 60 * 60 * 1000);
+}, 60 * 60 * 1010);
 
 setInterval(() => {
     client.channels.cache.get(fin.channelID).send('.lotto');
-}, 15 * 60 * 1000);
+}, 15 * 61 * 1000);
 
 function init(jason) {
     fin = jason;
