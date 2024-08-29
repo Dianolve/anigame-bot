@@ -98,11 +98,3 @@ function init(jason) {
     fin = jason;
     client.login(jason.token);
 }
-/*
-  if (message.author.id === fin.aniGameID && message.channel.id === fin.channelID && !currentInteraction) {
-            console.log(message.components)
-            currentInteraction = true;
-            message.clickButton();
-            NextIsFight = true;
-        }
-*/
