@@ -2,7 +2,8 @@ const { Client } = require('discord.js-selfbot-v13');
 const fs = require('fs');
 const client = new Client();
 fin = {};
-currentInteraction = false;
+NextIsFight = false;
+FightResult = 0;
 
 try {
     const data = fs.readFileSync("config.json", "utf-8");
@@ -18,22 +19,58 @@ client.on('ready', async () => {
 });
 
 client.on("messageCreate", message => {
-    if (message.content == 'begin' && message.channel.id === fin.channelID) {
+    if(message.author.id === fin.aniGameID && message.channel.id === fin.channelID) console.log(message.embeds);
+
+    if(message.channel.id === fin.channelID && message.author.id === client.id) {
         message.reply('ok!');
         console.log('init in: ' + message.channel.id + ' in server: ' + message.guild.id)
         client.channels.cache.get(fin.channelID).send('.bt');
     }
-});
 
-client.on("messageCreate", message => {
-    if (message.author.id === fin.aniGameID && message.channel.id === fin.channelID && !currentInteraction) {
-        console.log(message.components)
-        currentInteraction = true;
-        message.clickButton();
+    switch (NextIsFight) {
+        case true:
+            if(message.author.id === fin.aniGameID && message.channel.id === fin.channelID) NextIsFight = false;
+            console.log('Fight in progress!')
+            break;
+        case false:
+            switch (message.content.split(" ")[0]) {
+                case 'begin':
+                    if(message.channel.id === fin.channelID) {
+                        message.reply('ok!');
+                        console.log('init in: ' + message.channel.id + ' in server: ' + message.guild.id)
+                        client.channels.cache.get(fin.channelID).send('.bt');
+                    }
+                    break;
+            
+                case 'Congratulations!':
+                    if(message.channel.id === fin.channelID && message.author.id === fin.aniGameID) {
+                        client.channels.cache.get(fin.channelID).send('.bt');
+                        console.log('Fight Complete!')
+                        break;
+                    }
+                default:
+                    if(message.author.id === fin.aniGameID && message.channel.id === fin.channelID){
+                        console.log(message.embeds[0].footer.text.split("  ")[0]);
+                        if(message.embeds[0].footer.text == 'React with ✅ to confirm the battle!') {
+                            message.clickButton();
+                            NextIsFight = true;
+                        }
+                    }
+            }
+
     }
 });
+
 
 function init(jason) {
     fin = jason;
     client.login(jason.token);
 }
+/*
+  if (message.author.id === fin.aniGameID && message.channel.id === fin.channelID && !currentInteraction) {
+            console.log(message.components)
+            currentInteraction = true;
+            message.clickButton();
+            NextIsFight = true;
+        }
+*/
