@@ -73,7 +73,9 @@ client.on("messageCreate", message => {
                         try {
                             if(message.embeds[0].footer.text == 'React with ✅ to confirm the battle!') {
                                 try {
-                                    message.clickButton();
+                                    setTimeout(() => {
+                                        message.clickButton();
+                                    }, 3000);
                                 } catch (error) {
                                     console.log('interaction failed');
                                 }
